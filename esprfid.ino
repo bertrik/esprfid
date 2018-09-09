@@ -10,8 +10,8 @@
 #include <MFRC522.h>
 
 // TODO give these a meaningful value
-#define PIN_MFRC_SS  3
-#define PIN_MFRC_RST 4
+#define PIN_MFRC_SS  D8
+#define PIN_MFRC_RST D3
 
 static WiFiManager wifiManager;
 static WiFiClient wifiClient;
