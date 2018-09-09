@@ -32,7 +32,7 @@ void setup(void)
     wifiManager.autoConnect("ESP-RFID");
 }
 
-static int post_uid(int len, const unsigned char *uid)
+static int post_uid(const char *url, int len, const unsigned char *uid)
 {
     // create UID string
     char payload[128];
@@ -45,7 +45,7 @@ static int post_uid(int len, const unsigned char *uid)
     
     // send it over HTTP
     HTTPClient http;
-    http.begin("http://server.com/api");
+    http.begin(url);
     int result = http.POST((uint8_t *)payload, strlen(payload));
     http.end();
     
@@ -58,7 +58,7 @@ void loop(void)
         if (mfrc522.PICC_ReadCardSerial()) {
             Serial.println("Detected card!");
             // send the UID
-            int result = post_uid(4, mfrc522.uid.uidByte);
+            int result = post_uid("http://server.com/api", mfrc522.uid.size, mfrc522.uid.uidByte);
             Serial.print("Result: ");
             Serial.println(result, DEC);
         }
