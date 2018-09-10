@@ -9,9 +9,9 @@
 
 #include <MFRC522.h>
 
-// TODO give these a meaningful value
 #define PIN_MFRC_SS  D8
 #define PIN_MFRC_RST D3
+#define PIN_LED      D4
 
 static WiFiManager wifiManager;
 static WiFiClient wifiClient;
@@ -22,6 +22,10 @@ void setup(void)
     // initialize serial port
     Serial.begin(115200);
     Serial.println("RFID reader\n");
+
+    // enable LED pin
+    pinMode(PIN_LED, OUTPUT);
+    digitalWrite(PIN_LED, 1);
 
     // initialise card reader
     SPI.begin();
@@ -64,11 +68,15 @@ void loop(void)
 {
     if (mfrc522.PICC_IsNewCardPresent()) {
         if (mfrc522.PICC_ReadCardSerial()) {
+            digitalWrite(PIN_LED, 0);
+
             Serial.println("Detected card!");
             // send the UID
             int result = post_uid("http://httpbin.org/post", mfrc522.uid.size, mfrc522.uid.uidByte);
             Serial.print("Result: ");
             Serial.println(result, DEC);
+
+            digitalWrite(PIN_LED, 1);
         }
     }
 }
